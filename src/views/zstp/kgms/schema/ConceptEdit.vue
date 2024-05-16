@@ -99,6 +99,13 @@ function handleAbsChange () {
     })
   }
 }
+
+const rules = {
+  name: [
+    { required: true, message: '请输入名称', trigger: 'change' },
+    { min: 1, max: 50, message: '1-50个字符', trigger: 'change' },
+  ]
+}
 </script>
 
 <template>
@@ -117,7 +124,7 @@ function handleAbsChange () {
     <!--      <el-button type="primary">保存</el-button>-->
     <!--    </template>-->
     <template #main-table>
-      <el-form :model="conceptDetail" label-width="120px" size="large">
+      <el-form :model="conceptDetail" label-width="120px" size="large" :rules="rules">
         <el-form-item label="ID" prop="id">
           {{ conceptDetail.id }}
         </el-form-item>

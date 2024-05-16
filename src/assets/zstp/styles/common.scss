@@ -5,6 +5,8 @@
   --pd-margin-padding-3: 24px;
   --pd-margin-padding-4: 32px;
 
+  --pd-text-color-titile: #232426;
+
   --pd-divider: var(--el-border-width) var(--el-border-style) var(--el-border-color); // 默认的边框
 
   --pd-card-bg-color: var(--el-color-white);
@@ -45,4 +47,41 @@
   --pd-subpage-body-main-bottom-height: 40px; // 页面内容底部条高度
   --pd-subpage-body-main-margin: var(--pd-margin-padding-2);
   --pd-subpage-body-main-gap: var(--pd-margin-padding-2);
+}
+
+.el-dialog {
+  &.zstp-dialog-mini {
+    width: 480px;
+  }
+
+  &.zstp-dialog-small {
+    width: 640px;
+  }
+
+  &.zstp-dialog-middle {
+    width: 720px;
+  }
+
+  &.zstp-dialog-large {
+    width: 960px;
+  }
+
+  &.zstp-dialog-with-title-style {
+    .el-dialog__title {
+      position: relative;
+      font-size: 18px;
+      color: var(--pd-text-color-titile);
+
+      &::after {
+        content: "";
+        width: 2px;
+        height: var(--el-dialog-font-line-height);
+        background: var(--el-color-primary);
+        display: block;
+        position: absolute;
+        top: 0;
+        left: calc(var(--el-dialog-padding-primary) * -1);
+      }
+    }
+  }
 }

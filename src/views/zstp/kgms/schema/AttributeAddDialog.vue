@@ -101,6 +101,7 @@ defineExpose({
 <template>
   <el-dialog
     v-model="dialogVisible"
+    class="zstp-dialog-with-title-style"
     :title="title"
     width="900">
     <div class="attribute-add-dialog-content">
@@ -113,7 +114,7 @@ defineExpose({
           width="200"
           label="数值属性名称">
           <template #default="scope">
-            <el-input size="small" :maxlength="50" v-model.trim="scope.row.name"
+            <el-input :maxlength="50" v-model.trim="scope.row.name"
                       placeholder="请输入名称"></el-input>
           </template>
         </el-table-column>
@@ -121,7 +122,7 @@ defineExpose({
           prop="key"
           label="唯一标识">
           <template #default="scope">
-            <el-input placeholder="选填" :maxlength="50" size="small" class="tag-input"
+            <el-input placeholder="选填" :maxlength="50" class="tag-input"
                       v-model.trim="scope.row.key"></el-input>
           </template>
         </el-table-column>
@@ -133,7 +134,6 @@ defineExpose({
           </template>
           <template #default="scope">
             <el-select
-              size="small"
               @change="dataTypeChange(scope.row)"
               v-model="scope.row.dataType"
               placeholder="请选择">

@@ -18,7 +18,6 @@ const dialogVisible = ref(false)
 
 const tableData = ref([])
 const conceptData = ref({})
-const conceptTree = ref([])
 const open = (data) => {
   conceptData.value = data
   tableData.value = getTableDataItem(5)
@@ -26,6 +25,7 @@ const open = (data) => {
   dialogVisible.value = true
 }
 
+const conceptTree = ref([])
 function requestTree () {
   zstpRequest({
     url: `/edit/concept/${route.params.kgName}/0/tree`,
@@ -113,6 +113,7 @@ defineExpose({
   <el-dialog
     v-model="dialogVisible"
     :title="title"
+    class="zstp-dialog-with-title-style"
     width="900">
     <div class="attribute-add-dialog-content">
       <el-table
@@ -125,7 +126,6 @@ defineExpose({
           <template #default="scope">
             <el-input
               class="form-item-input"
-              size="small"
               :maxlength="50"
               v-model="scope.row.name"
               style="width: 100%"
@@ -136,7 +136,7 @@ defineExpose({
           prop="key"
           label="唯一标识">
           <template #default="scope">
-            <el-input placeholder="选填" :maxlength="50" size="small" class="tag-input"
+            <el-input placeholder="选填" :maxlength="50" class="tag-input"
                       v-model="scope.row.key"></el-input>
           </template>
         </el-table-column>
@@ -147,7 +147,6 @@ defineExpose({
           <template #default="scope">
             <el-cascader
               :options="conceptTree"
-              size="small"
               collapse-tags
               v-model="scope.row.rangeValue"
               :props="{ multiple: true, value: 'id',label: 'name', checkStrictly: true, emitPath: false }"
@@ -160,7 +159,6 @@ defineExpose({
           label="指向">
           <template #default="scope">
             <el-select
-              size="small"
               v-model="scope.row.direction"
               placeholder="请选择">
               <el-option

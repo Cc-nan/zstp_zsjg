@@ -102,7 +102,7 @@ conceptTreeBus.on(() => {
 @use "@/assets/zstp/styles/mixin.scss" as *;
 
 .zstp-concept-tree {
-  width: 256px;
+  width: 240px;
   height: 100%;
   display: flex;
   flex-direction: column;

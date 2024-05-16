@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ref, watch } from 'vue'
 import { zstpRequest } from '@/api/zstp/axios.js'
 import { ElMessage } from '@/utils/zstp/message.js'
+import _ from 'lodash'
 
 const route = useRoute()
 const router = useRouter()
@@ -38,6 +39,39 @@ function handleSave () {
     ElMessage.success('修改成功')
   })
 }
+
+const conceptTree = ref([])
+function requestTree () {
+  zstpRequest({
+    url: `/edit/concept/${route.params.kgName}/0/tree`,
+    method: 'POST'
+  }).then((res) => {
+    const root = []
+    for (const item of res) {
+      const parent = _.find(res, { id: item.conceptId })
+      if (parent) {
+        if (!parent.children) {
+          parent.children = []
+        }
+        parent.children.push(item)
+      } else {
+        root.push(item)
+      }
+    }
+    conceptTree.value = root[0]?.children || []
+  })
+}
+requestTree()
+
+const rules = {
+  name: [
+    { required: true, message: '请输入名称', trigger: 'change' },
+    { min: 1, max: 50, message: '1-50个字符', trigger: 'change' },
+  ],
+  rangeValue: [
+    { required: true, message: '请选择值域', trigger: 'change' },
+  ]
+}
 </script>
 
 <template>
@@ -56,7 +90,7 @@ function handleSave () {
       <el-button type="primary" @click="handleSave">保存</el-button>
     </template>
     <template #main-table>
-      <el-form :model="attrDetail" label-width="120px" size="large">
+      <el-form :model="attrDetail" label-width="120px" size="large" :rules="rules">
         <el-form-item label="属性ID" prop="id">
           {{ attrDetail.id }}
         </el-form-item>
@@ -91,8 +125,14 @@ function handleSave () {
             <el-option :value="0">正向</el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="值域" prop="range">
-          {{ attrDetail.rangeName?.join('、') }}
+        <el-form-item label="值域" prop="rangeValue">
+          <el-cascader
+            :options="conceptTree"
+            size="small"
+            collapse-tags
+            v-model="attrDetail.rangeValue"
+            :props="{ multiple: true, value: 'id',label: 'name', checkStrictly: true, emitPath: false }"
+            clearable></el-cascader>
         </el-form-item>
       </el-form>
     </template>

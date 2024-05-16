@@ -32,6 +32,9 @@ importers:
       pinia:
         specifier: ^2.1.7
         version: 2.1.7(vue@3.4.27)
+      reactive-menu-item:
+        specifier: ^1.0.5
+        version: 1.0.5(element-plus@2.7.3(vue@3.4.27))(lodash@4.17.21)(vue-router@4.3.2(vue@3.4.27))(vue@3.4.27)
       vue:
         specifier: ^3.4.21
         version: 3.4.27
@@ -1216,6 +1219,14 @@ packages:
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
+
+  reactive-menu-item@1.0.5:
+    resolution: {integrity: sha512-G44M3TRcdSRsbuIZGqtfFmiCMzzuWfyQ7jJznjViHcWBrigBkDS6Mo34oRSf6MGONrw6zbaRM6SOpvCLCk6hiw==}
+    peerDependencies:
+      element-plus: '>=2.0.0'
+      lodash: '>=4.0.0'
+      vue: '>=3.0.0'
+      vue-router: '>=4.0.0'
 
   readdirp@3.6.0:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
@@ -2522,6 +2533,13 @@ snapshots:
   punycode@2.3.1: {}
 
   queue-microtask@1.2.3: {}
+
+  reactive-menu-item@1.0.5(element-plus@2.7.3(vue@3.4.27))(lodash@4.17.21)(vue-router@4.3.2(vue@3.4.27))(vue@3.4.27):
+    dependencies:
+      element-plus: 2.7.3(vue@3.4.27)
+      lodash: 4.17.21
+      vue: 3.4.27
+      vue-router: 4.3.2(vue@3.4.27)
 
   readdirp@3.6.0:
     dependencies:

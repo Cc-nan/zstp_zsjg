@@ -144,19 +144,19 @@ function deleteConceptBtn () {
 <template>
   <page-content class="attribute-table" no-breadcrumb no-main-gap no-margin>
     <template #main-top-left>
-      模式定义
+      本体建模
     </template>
     <template #main-top-right>
       <el-space>
         <el-button-group class="button-group" v-if="query.conceptId !== 0">
-          <el-button @click="handleEditConcept" class="" plain size="small" type="primary">
+          <el-button @click="handleEditConcept" class="" plain type="primary">
             编辑概念
           </el-button>
-          <el-button @click="addNumericalAttributeBtn" class="" plain size="small"
+          <el-button @click="addNumericalAttributeBtn" class="" plain
                      type="primary">
             添加数值属性
           </el-button>
-          <el-button @click="addObjectAttributeBtn" class="" plain size="small" type="primary">
+          <el-button @click="addObjectAttributeBtn" class="" plain type="primary">
             添加对象属性
           </el-button>
           <!--          <el-button @click="timeSpaceVisible = true" plain size="small" type="primary" :disabled="$menuPower.isRead">-->
@@ -166,7 +166,7 @@ function deleteConceptBtn () {
           <!--            添加多模态属性-->
           <!--          </el-button>-->
         </el-button-group>
-        <el-button v-if="query.conceptId !== 0" size="small"
+        <el-button v-if="query.conceptId !== 0"
                    @click="deleteConceptBtn" class="deleteConceptBtn" type="danger"
                    plain>
           删除概念

@@ -1,0 +1,34 @@
+@forward '~element-plus/theme-chalk/src/common/var.scss' with (
+  $colors: (
+    'primary': (
+      'base': #4C84FF
+    )
+  ),
+  $text-color: (
+    'primary': #434343,
+    'regular': #5c6268,
+    'secondary': #8c939b,
+    'placeholder': #b8bec8
+  ),
+  $border-color: (
+    '': #f0f0f0,
+    'light': #f0f0f0,
+    'lighter': #f0f0f0,
+    'extra-light': #f0f0f0
+  ),
+  $bg-color: (
+    '': #fff
+  )
+);
+
+@use './dark.scss';
+
+// 如果只是按需导入，则可以忽略以下内容。
+// 如果你想导入所有样式:
+//@use "~element-plus/theme-chalk/src/index.scss" as *;
+
+// import default theme
+@use "~element-plus/theme-chalk/src/var.scss" as *;
+// import dark theme
+@use "~element-plus/theme-chalk/src/dark/css-vars.scss" as *;
+
