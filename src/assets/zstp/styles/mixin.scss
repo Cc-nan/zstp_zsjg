@@ -1,0 +1,120 @@
+@mixin scroll($bg: var(--pd-scroll-bg-color), $thumb: var(--pd-scroll-thumb-color), $btn: var(--pd-scroll-button-color), $size: 8px) {
+  scrollbar-3dlight-color: $bg; /* stylelint-disable-line property-no-unknown */
+  scrollbar-highlight-color: $bg;
+  scrollbar-face-color: $thumb;
+  scrollbar-arrow-color: $btn;
+  scrollbar-shadow-color: $thumb;
+  scrollbar-dark-shadow-color: $thumb;
+  scrollbar-base-color: $bg;
+  scrollbar-track-color: $bg;
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    width: $size;
+    height: $size;
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-button {
+    display: none;
+    background-color: $btn;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $bg;
+    border-radius: calc($size / 2);
+  }
+
+  &::-webkit-scrollbar-track-piece {
+    background: $bg;
+    border-radius: calc($size / 2);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $thumb;
+    border-radius: calc($size / 2);
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: $bg;
+  }
+
+  &::-webkit-resizer {
+    background: $bg;
+  }
+}
+
+@mixin placeholder($color: #ccc) {
+  &::-moz-placeholder { /* stylelint-disable-line selector-no-vendor-prefix */
+    color: $color;
+    opacity: 1;
+  }
+
+  &:-ms-input-placeholder { /* stylelint-disable-line selector-no-vendor-prefix */
+    color: $color;
+  }
+
+  &::-webkit-input-placeholder { /* stylelint-disable-line selector-no-vendor-prefix */
+    color: $color;
+  }
+}
+
+@mixin line-hidden {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: keep-all;
+  white-space: nowrap;
+}
+
+/* 仅适用-webkit- 内核浏览器  */
+@mixin wrap($row) {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: $row;
+  -webkit-box-orient: vertical;
+}
+
+/* mixin for multiline */
+@mixin multiline-ellipsis($lineCount: 2, $lineHeight: 1.2em, $bgColor: white) {
+  position: relative;
+  max-height: $lineHeight * $lineCount;
+  padding-right: 1em;
+  margin-right: -1em;
+  overflow: hidden;
+  line-height: $lineHeight;
+  text-align: justify;
+
+  &::before {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    content: "...";
+  }
+
+  &::after {
+    position: absolute;
+    right: 0;
+    width: 1em;
+    height: 1em;
+    margin-top: 0.2em;
+    content: "";
+    background: $bgColor;
+  }
+}
+
+@mixin multiline-hidden($count: 2) {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $count;
+}
+
+@mixin text-gradient($start: var(--color-primary), $end: #fff, $direction: bottom) {
+  background-image: linear-gradient($direction, $start, $end);
+  -webkit-background-clip: text; /* stylelint-disable-line property-no-vendor-prefix */
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
