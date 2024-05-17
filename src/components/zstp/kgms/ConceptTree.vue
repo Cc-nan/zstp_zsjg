@@ -1,9 +1,7 @@
 <script setup>
 import _ from 'lodash'
-import { zstpRequest } from '@/api/zstp/axios.js'
-import { nextTick, onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
-import { useEventBus } from '@vueuse/core'
+import { nextTick, ref, watch } from 'vue'
+import { useZstpKgStore } from '@/store/zstp/kg.js'
 
 const emits = defineEmits(['node-click'])
 const conceptId = defineModel('conceptId', { type: Number, default: 0 })
@@ -13,40 +11,22 @@ const treeProps = {
   label: 'name'
 }
 
-const route = useRoute()
-
 const treeRef = ref(null)
 const kw = ref('')
-const conceptTree = ref([])
+const kgStore = useZstpKgStore()
 
-const requestTree = () => {
-  zstpRequest({
-    url: `/edit/concept/${route.params.kgName}/0/tree`,
-    method: 'POST'
-  }).then((res) => {
-    const root = []
-    for (const item of res) {
-      const parent = _.find(res, { id: item.conceptId })
-      if (parent) {
-        if (!parent.children) {
-          parent.children = []
-        }
-        parent.children.push(item)
-      } else {
-        root.push(item)
-      }
-    }
-    conceptTree.value = root
+watch([kgStore.kgName], () => {
+  if (kgStore.kgName) {
+    kgStore.requestConcept(true)
+  }
+}, {
+  immediate: true
+})
 
-    nextTick(() => {
-      treeRef.value.setCurrentKey(conceptId.value)
-    })
+watch(() => kgStore.conceptTree.value, () => {
+  nextTick(() => {
+    treeRef.value.setCurrentKey(conceptId.value)
   })
-}
-
-
-onMounted(() => {
-  requestTree()
 })
 
 const filterNode = (value, data) => {
@@ -64,11 +44,6 @@ const debounceTreeSearch = _.debounce(() => {
   trailing: true
 })
 watch(() => kw.value, debounceTreeSearch)
-
-const conceptTreeBus = useEventBus('conceptTree')
-conceptTreeBus.on(() => {
-  requestTree()
-})
 </script>
 
 <template>
@@ -87,7 +62,7 @@ conceptTreeBus.on(() => {
         :current-node-key="conceptId"
         :filter-node-method="filterNode"
         @node-click="handleClick"
-        :data="conceptTree">
+        :data="kgStore.conceptTree">
         <template #default="{data, node}">
           <slot :data="data" :node="node">
             <el-text truncated :title="data.name">{{ data.name }}</el-text>

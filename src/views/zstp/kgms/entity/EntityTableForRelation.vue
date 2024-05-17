@@ -65,7 +65,7 @@ function handleAddEntity () {
 
 function editInstance (row) {
   router.push({
-    name: 'zstpEntityEdit',
+    name: 'zstpEntityRelationEdit',
     query: {
       ...query,
       entityId: row.id

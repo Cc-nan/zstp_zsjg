@@ -1,17 +1,17 @@
 <script setup>
 import { ref } from 'vue'
+import { useZstpKgStore } from '@/store/zstp/kg.js'
 
+const kgStore = useZstpKgStore()
 const title = '切换图谱'
 const dialogVisible = ref(false)
 const form = ref({
   kgName: ''
 })
-const kgList = ref([])
 
-const open = (kgName, kgArr) => {
+const open = () => {
   dialogVisible.value = true
-  form.value.kgName = kgName
-  kgList.value = kgArr
+  form.value.kgName = kgStore.kgName.value
 }
 
 const emits = defineEmits(['kg-change'])
@@ -32,7 +32,11 @@ defineExpose({
     :title="title"
     width="500">
     <el-radio-group v-model="form.kgName">
-      <el-radio v-for="item of kgList" :key="item.kgName" :value="item.kgName" border>{{ item.title }}</el-radio>
+      <el-radio
+        v-for="item of kgStore.kgList"
+        :key="item.kgName"
+        :value="item.kgName"
+        border>{{ item.title }}</el-radio>
     </el-radio-group>
     <template #footer>
       <div class="dialog-footer">

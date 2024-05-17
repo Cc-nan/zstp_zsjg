@@ -1,11 +1,10 @@
 <script setup>
-import { computed, nextTick, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { zstpRequest } from '@/api/zstp/axios.js'
 import { useRoute, useRouter } from 'vue-router'
-import { useEventBus } from '@vueuse/core'
 import { ElMessage } from '@/utils/zstp/message.js'
+import { useZstpKgStore } from '@/store/zstp/kg.js'
 
-const conceptTreeBus = useEventBus('conceptTree')
 const dialogVisible = ref(false)
 const parent = ref({})
 const title = computed(() => {
@@ -29,6 +28,7 @@ const handleAddFormItem = (length) => {
 }
 const route = useRoute()
 const router = useRouter()
+const kgStore = useZstpKgStore()
 
 const open = (parentData) => {
   parent.value = parentData
@@ -52,7 +52,7 @@ const handleAddConcept = (formItem) => {
     }
   }).then((res) => {
     formItem.id = res
-    conceptTreeBus.emit('on-concept-add')
+    kgStore.requestConcept(true)
   })
 }
 

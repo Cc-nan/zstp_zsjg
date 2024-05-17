@@ -5,6 +5,7 @@ import { Delete } from '@element-plus/icons-vue'
 import { ElMessage } from '@/utils/zstp/message.js'
 import { zstpRequest } from '@/api/zstp/axios.js'
 import { useRoute } from 'vue-router'
+import { useZstpKgStore } from '@/store/zstp/kg.js'
 
 const route = useRoute()
 const emits = defineEmits(['on-success'])
@@ -15,36 +16,19 @@ const kgName = computed(() => {
 
 const title = '对象属性定义'
 const dialogVisible = ref(false)
+const kgStore = useZstpKgStore()
+kgStore.requestConcept()
+
+const conceptTree = computed(() => {
+  return kgStore.conceptTree?.[0]?.children || []
+})
 
 const tableData = ref([])
 const conceptData = ref({})
 const open = (data) => {
   conceptData.value = data
   tableData.value = getTableDataItem(5)
-  requestTree()
   dialogVisible.value = true
-}
-
-const conceptTree = ref([])
-function requestTree () {
-  zstpRequest({
-    url: `/edit/concept/${route.params.kgName}/0/tree`,
-    method: 'POST'
-  }).then((res) => {
-    const root = []
-    for (const item of res) {
-      const parent = _.find(res, { id: item.conceptId })
-      if (parent) {
-        if (!parent.children) {
-          parent.children = []
-        }
-        parent.children.push(item)
-      } else {
-        root.push(item)
-      }
-    }
-    conceptTree.value = root[0]?.children || []
-  })
 }
 
 function confirm () {

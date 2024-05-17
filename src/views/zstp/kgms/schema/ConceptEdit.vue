@@ -1,21 +1,16 @@
 <script setup>
 
-import PageContent from '@/components/zstp/PageContent.vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { ref, watch } from 'vue'
 import { zstpRequest } from '@/api/zstp/axios.js'
 import _ from 'lodash'
 import { ElMessage } from '@/utils/zstp/message.js'
-import { useEventBus } from '@vueuse/core'
 import EditorItemStatus from '@/components/zstp/kgms/EditorItemStatus.vue'
+import { useZstpKgStore } from '@/store/zstp/kg.js'
 
 const route = useRoute()
-const router = useRouter()
-const conceptTreeBus = useEventBus('conceptTree')
 
-const goBack = () => {
-  router.go(-1)
-}
+const kgStore = useZstpKgStore()
 
 watch(() => route.query.conceptId, () => {
   requestConceptDetail()
@@ -59,7 +54,7 @@ function handleNameChange (field) {
         status: 'success'
       }
       if (field === 'name') {
-        conceptTreeBus.emit('on-concept-name-update')
+        kgStore.requestConcept(true)
       }
     }, (error) => {
       if (error.message) {

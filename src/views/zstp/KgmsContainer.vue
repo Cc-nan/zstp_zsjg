@@ -1,14 +1,13 @@
 <script setup>
 import { RouterView, useRoute, useRouter } from 'vue-router'
-import { zstpRequest } from '@/api/zstp/axios.js'
 import { nextTick, ref } from 'vue'
 import _ from 'lodash'
 import KgAddDialog from '@/views/zstp/kgms/KgAddDialog.vue'
 import { useReactiveMenu, ReactiveMenuItem } from 'reactive-menu-item'
 import { Menu, Refresh } from '@element-plus/icons-vue'
 import KgChangeDialog from '@/views/zstp/kgms/KgChangeDialog.vue'
+import { useZstpKgStore } from '@/store/zstp/kg.js'
 
-const kgList = ref([])
 const route = useRoute()
 const router = useRouter()
 
@@ -113,6 +112,36 @@ const reactiveMenuData = useReactiveMenu([
             }
           }
         ]
+      },
+      {
+        name: '关系编辑',
+        enable: true,
+        checked: true,
+        type: 'menu',
+        order: 1,
+        config: {
+          isDefault: true,
+          boundary: true,
+          route: {
+            name: 'zstpEntityListForRelation'
+          }
+        },
+        children: [
+          {
+            name: '实体关系编辑',
+            enable: true,
+            checked: true,
+            type: 'shadowMenu',
+            order: 1,
+            config: {
+              isDefault: true,
+              boundary: true,
+              route: {
+                name: 'zstpEntityRelationEdit'
+              }
+            }
+          }
+        ]
       }
     ]
   }
@@ -123,27 +152,23 @@ const reactiveMenuData = useReactiveMenu([
   }
 })
 
+const kgStore = useZstpKgStore()
+
 const isCollapse = ref(false)
 const kgAddDialogRef = ref(null)
 const kgChangeDialogRef = ref(null)
-const kg = ref({})
 
 function init () {
-  zstpRequest({
-    url: '/graph/all',
-    method: 'POST'
-  }).then((res) => {
-    kgList.value = res
+  kgStore.requestKgList().then((res) => {
     let kgName = route.params?.kgName
     if (!res?.length) {
       kgAddDialogRef.value.open()
-      kg.value = {}
       return
     }
-    const currentKg = _.find(kgList.value, { kgName: kgName })
+    const currentKg = _.find(kgStore.kgList, { kgName: kgName })
     if (!(kgName && currentKg)) {
-      kg.value = kgList.value[0]
-      kgName = kgList.value[0].kgName
+      kgName = res?.[0]?.kgName
+      kgStore.setKgByKgName(kgName)
       router.replace({
         params: {
           ...route.params,
@@ -151,7 +176,7 @@ function init () {
         }
       })
     } else {
-      kg.value = currentKg
+      kgStore.setKgByKgName(currentKg.kgName)
     }
   })
 }
@@ -177,7 +202,7 @@ function handleChangeKg (kgName) {
       kgName
     }
   })
-  kg.value = _.find(kgList.value, { kgName: kgName })
+  kgStore.setKgByKgName(kgName)
 }
 
 function newKg () {
@@ -185,7 +210,7 @@ function newKg () {
 }
 
 function changeKg () {
-  kgChangeDialogRef.value.open(kg.value.kgName, kgList.value)
+  kgChangeDialogRef.value.open()
 }
 
 </script>
@@ -224,8 +249,10 @@ function changeKg () {
             class="el-menu-demo"
             mode="horizontal">
             <el-menu-item @click="changeKg">
-              {{kg.title}}
-              <el-icon><Refresh /></el-icon>
+              {{ kgStore?.kg?.title }}
+              <el-icon>
+                <Refresh />
+              </el-icon>
             </el-menu-item>
             <el-menu-item @click="newKg">新建图谱</el-menu-item>
           </el-menu>
@@ -239,9 +266,9 @@ function changeKg () {
         </div>
       </div>
       <div class="zstp-container-main">
-        <RouterView v-if="route.params.kgName" :key="route.params.kgName" />
+        <RouterView v-if="kgStore.kgName" :key="kgStore.kgName" />
         <kg-add-dialog @on-success="handleAddKg" ref="kgAddDialogRef" />
-        <kg-change-dialog @kg-change="handleChangeKg" ref="kgChangeDialogRef"/>
+        <kg-change-dialog @kg-change="handleChangeKg" ref="kgChangeDialogRef" />
       </div>
     </div>
   </div>
@@ -306,8 +333,12 @@ function changeKg () {
         }
       }
 
-      .header-right{
+      .header-right {
         flex: none;
+
+        .el-menu {
+          border: none;
+        }
       }
     }
 

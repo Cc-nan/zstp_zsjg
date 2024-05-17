@@ -1,17 +1,17 @@
 <script setup>
 
-import PageContent from '@/components/zstp/PageContent.vue'
-import { useRoute, useRouter } from 'vue-router'
-import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { computed, ref, watch } from 'vue'
 import { zstpRequest } from '@/api/zstp/axios.js'
 import { ElMessage } from '@/utils/zstp/message.js'
-import _ from 'lodash'
+import { useZstpKgStore } from '@/store/zstp/kg.js'
 
 const route = useRoute()
-const router = useRouter()
-const goBack = () => {
-  router.go(-1)
-}
+const kgStore = useZstpKgStore()
+kgStore.requestConcept()
+const conceptTree = computed(() => {
+  return kgStore.conceptTree?.[0]?.children || []
+})
 
 watch(() => route.query.conceptId, () => {
   requestConceptDetail()
@@ -39,31 +39,6 @@ function handleSave () {
     ElMessage.success('修改成功')
   })
 }
-
-const conceptTree = ref([])
-
-function requestTree () {
-  zstpRequest({
-    url: `/edit/concept/${route.params.kgName}/0/tree`,
-    method: 'POST'
-  }).then((res) => {
-    const root = []
-    for (const item of res) {
-      const parent = _.find(res, { id: item.conceptId })
-      if (parent) {
-        if (!parent.children) {
-          parent.children = []
-        }
-        parent.children.push(item)
-      } else {
-        root.push(item)
-      }
-    }
-    conceptTree.value = root[0]?.children || []
-  })
-}
-
-requestTree()
 
 const rules = {
   name: [
@@ -104,7 +79,6 @@ const rules = {
             <el-radio :value="0">不添加</el-radio>
           </el-radio-group>
         </el-form-item>
-
         <el-form-item label="属性多值" prop="functional">
           <el-radio-group v-model="attrDetail.functional" disabled>
             <el-radio :value="1">不支持</el-radio>
@@ -119,7 +93,7 @@ const rules = {
         </el-form-item>
         <el-form-item label="值域" prop="rangeValue">
           <el-cascader
-            :options="conceptTree" s
+            :options="conceptTree"
             collapse-tags
             v-model="attrDetail.rangeValue"
             :props="{ multiple: true, value: 'id',label: 'name', checkStrictly: true, emitPath: false }"
