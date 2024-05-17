@@ -20,6 +20,14 @@ zstpRequest({
     isEntity: true
   }
 }).then((res) => {
+  // for (const attr of res.attrValue) {
+  //   if (attr.dataType === 9 && !attr.dataValue) {
+  //     attr.dataValue = {
+  //       name: '',
+  //       href: ''
+  //     }
+  //   }
+  // }
   entity.value = res
   entityBackup.value = _.cloneDeep(res)
 })
@@ -52,6 +60,7 @@ function handleNameChange (field) {
     })
   }
 }
+
 function handleAbsChange () {
   if (entity.value.abs !== entityBackup.value.abs) {
     zstpRequest({
@@ -77,8 +86,26 @@ function handleAbsChange () {
     })
   }
 }
+
 function handleAttrChange (attr) {
   console.log(attr)
+  const backupAttr = entityBackup.value.attrValue.find(item => item.id === attr.id)
+  if (attr.dataValue !== backupAttr.dataValue) {
+    zstpRequest({
+      url: `/edit/entity/${route.params.kgName}/number/update`,
+      method: 'POST',
+      data: {
+        entityId: route.query.entityId,
+        attrValue: attr.dataValue,
+        attrId: attr.id
+      }
+    }).then(() => {
+      backupAttr.dataValue = attr.dataValue
+      editStatusMap.value['attr-id-' + attr.id] = {
+        status: 'success'
+      }
+    })
+  }
 }
 </script>
 
@@ -120,16 +147,59 @@ function handleAttrChange (attr) {
         <editor-item-status :status="editStatusMap.abs?.status" :message="editStatusMap.abs?.message" />
       </el-form-item>
       <el-form-item
-        v-for="attr of attrValue"
+        v-for="attr of entity.attrValue"
         :key="attr.id"
         :label="attr.name"
         :prop="attr.id">
-        <el-input
+        <el-input-number
+          v-if="attr.dataType === 1"
           v-model="attr.dataValue"
-          @blur="handleAbsChange"
-          @keyup.enter="handleAttrChange(item)">
+          :step="1"
+          step-strictly
+          @change="handleAttrChange(attr)">
+        </el-input-number>
+        <el-input-number
+          v-if="attr.dataType === 2"
+          v-model="attr.dataValue"
+          :step="0.1"
+          @change="handleAttrChange(attr)">
+        </el-input-number>
+        <el-date-picker
+          class="el-date-picker"
+          type="datetime"
+          v-if="attr.dataType === 4"
+          v-model="attr.dataValue"
+          format="YYYY-MM-DD hh:mm:ss"
+          value-format="YYYY-MM-DD hh:mm:ss"
+          @change="handleAttrChange(attr)">
+        </el-date-picker>
+<!--        <el-date-picker-->
+<!--          class="el-date-picker"-->
+<!--          type="date"-->
+<!--          v-if="attr.dataType === 41"-->
+<!--          v-model="attr.dataValue"-->
+<!--          format="YYYY-MM-DD"-->
+<!--          value-format="YYYY-MM-DD"-->
+<!--          @change="handleAttrChange(attr)">-->
+<!--        </el-date-picker>-->
+
+        <el-input
+          v-if="attr.dataType === 5"
+          v-model="attr.dataValue"
+          @blur="handleAttrChange(attr)"
+          @keyup.enter="handleAttrChange(attr)">
         </el-input>
-        <editor-item-status :status="editStatusMap.abs?.status" :message="editStatusMap.abs?.message" />
+        <el-input
+          v-if="attr.dataType === 10"
+          v-model="attr.dataValue"
+          type="textarea"
+          @blur="handleAttrChange(attr)"
+          @keyup.enter="handleAttrChange(attr)">
+        </el-input>
+        <div v-if="attr.dataType === 9">
+          {{ attr.dataValue }}
+        </div>
+        <editor-item-status :status="editStatusMap['attr-id-' + attr.id]?.status" :message="editStatusMap['attr-id-' + attr.id]?.message" />
       </el-form-item>
     </el-form>
   </div>
@@ -142,6 +212,10 @@ function handleAttrChange (attr) {
   padding: var(--pd-margin-padding-2);
   @include scroll();
   width: 100%;
+
+  .el-input-number, :deep(.el-date-editor) {
+    width: 100%;
+  }
 
   .editor-item-status {
     position: absolute;

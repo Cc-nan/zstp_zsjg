@@ -6,6 +6,7 @@ import EntityAddDialog from '@/views/zstp/kgms/entity/EntityAddDialog.vue'
 import { ref } from 'vue'
 import FilterItem from '@/components/zstp/FilterItem.vue'
 import { ElMessage, ElMessageBox } from '@/utils/zstp/message.js'
+import { CloseBold, Select } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -65,14 +66,14 @@ function handleAddEntity () {
   entityAddDialogRef.value.open({ id: query.conceptId })
 }
 
-function handleDeleteEntity(ids) {
+function handleDeleteEntity (ids) {
   ElMessageBox.confirm(
     '此操作将永久删除选中实体，是否继续',
     '警告',
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning',
+      type: 'warning'
     }
   )
     .then(() => {
@@ -83,14 +84,14 @@ function handleDeleteEntity(ids) {
       }).then(() => {
         ElMessage({
           type: 'success',
-          message: '删除成功',
+          message: '删除成功'
         })
         deleteResultHandler(ids.length)
       })
     }, () => {
       ElMessage({
         type: 'info',
-        message: '已取消删除',
+        message: '已取消删除'
       })
     })
 }
@@ -103,6 +104,37 @@ function editInstance (row) {
       entityId: row.id
     }
   })
+}
+
+function clickCell (row, column) {
+  const type = column.property
+  if (!row[`${type}InputVisible`] && (type === 'score' || type === 'reliability')) {
+    row[`${type}InputVisible`] = true
+    row[`${type}Backup`] = row[type]
+  }
+}
+
+function scoreSubmit (row, type) {
+  if (row[type] < 0 || row[type] > 1) {
+    ElMessage.error('数值要在0-1之间')
+    return
+  }
+  zstpRequest({
+    url: `/edit/entity/${route.params.kgName}/${row.id}/${type}`,
+    method: 'POST',
+    data: {
+      [type]: row[type]
+    }
+  }).then(() => {
+    row[`${type}InputVisible`] = false
+    row[`${type}Backup`] = row[type]
+    ElMessage.success('修改成功')
+  })
+}
+
+function scoreCancel (row, type) {
+  row[`${type}InputVisible`] = false
+  row[type] = row[`${type}Backup`]
 }
 </script>
 
@@ -139,6 +171,7 @@ function editInstance (row) {
       <el-table
         height="100%"
         @selection-change="handleSelectionChange"
+        @cell-click="clickCell"
         :data="tableData.data" border>
         <el-table-column
           align="center"
@@ -194,18 +227,26 @@ function editInstance (row) {
                       class="middle grade">中</span>
                 <span v-if="scope.row.reliability && scope.row.reliability >= 0.8"
                       class="high grade">高</span>
-                <span>{{ scope.row.reliability }}</span>
+                <span>{{ scope.row.reliability || '-' }}</span>
               </div>
-              <span v-if="scope.row.reliabilityInputVisible" class="scoreInput">
-                 <el-input-number
-                   v-model="scope.row.reliability"
-                   :step="0.1"
-                   size="mini">
-                 </el-input-number>
+              <div v-if="scope.row.reliabilityInputVisible" class="score-input">
+                <el-input-number
+                  v-model="scope.row.reliability"
+                  :step="0.1"
+                  :max="1"
+                  :min="0"
+                  size="small">
+                </el-input-number>
                 <!--<el-button size="mini" @click.stop="scoreSubmit(scope.row, 'reliability')">确定</el-button>-->
-                <i class="ic-done table-icon table-icon-done" @click.stop="scoreSubmit(scope.row, 'reliability')"></i>
-                <i class="ic-close table-icon table-icon-close" @click.stop="scoreCancel(scope.row, 'reliability')"></i>
-              </span>
+                <el-link :underline="false" @click.stop="scoreSubmit(scope.row, 'reliability')" type="success">
+                  <el-icon><Select /></el-icon>
+                </el-link>
+                <el-link :underline="false" @click.stop="scoreCancel(scope.row, 'reliability')" type="danger">
+                  <el-icon>
+                    <CloseBold />
+                  </el-icon>
+                </el-link>
+              </div>
             </div>
           </template>
         </el-table-column>
@@ -223,18 +264,26 @@ function editInstance (row) {
                       class="middle grade">中</span>
                 <span v-if="scope.row.score && scope.row.score >= 0.8"
                       class="high grade">高</span>
-                <span>{{ scope.row.score }}</span>
+                <span>{{ scope.row.score || '-' }}</span>
               </div>
-              <span v-if="scope.row.scoreInputVisible" class="scoreInput">
-                 <el-input-number
-                   v-model="scope.row.score"
-                   :step="0.1"
-                   size="mini">
-                 </el-input-number>
+              <div v-if="scope.row.scoreInputVisible" class="score-input">
+                <el-input-number
+                  v-model="scope.row.score"
+                  :step="0.1"
+                  :max="1"
+                  :min="0"
+                  size="small">
+                </el-input-number>
                 <!--<el-button size="mini" @click.stop="scoreSubmit(scope.row, 'score')">确定</el-button>-->
-                <i class="ic-done table-icon table-icon-done" @click.stop="scoreSubmit(scope.row, 'score')"></i>
-                <i class="ic-close table-icon table-icon-close" @click.stop="scoreCancel(scope.row, 'score')"></i>
-              </span>
+                <el-link :underline="false" @click.stop="scoreSubmit(scope.row, 'score')" type="success">
+                  <el-icon><Select /></el-icon>
+                </el-link>
+                <el-link :underline="false" @click.stop="scoreCancel(scope.row, 'score')" type="danger">
+                  <el-icon>
+                    <CloseBold />
+                  </el-icon>
+                </el-link>
+              </div>
             </div>
           </template>
         </el-table-column>
@@ -314,6 +363,35 @@ function editInstance (row) {
 
   .el-divider {
     margin: 0;
+  }
+
+  .score-input {
+    display: flex;
+    gap: var(--pd-margin-padding-1);
+  }
+
+  .grade {
+    color: #fff;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-right: 4px;
+    line-height: 18px;
+    text-align: center;
+    border-radius: 3px;
+    font-size: 12px;
+
+    &.high {
+      background: #F5A623;
+    }
+
+    &.middle {
+      background: #F9C879;
+    }
+
+    &.low {
+      background: #DDDDDD;
+    }
   }
 }
 </style>

@@ -27,7 +27,7 @@ const open = (data) => {
 }
 
 function confirm () {
-  const usefulData =_.filter(tableData.value, item => {
+  const usefulData = _.filter(tableData.value, item => {
     return item.name
   })
   if (usefulData?.length) {
@@ -160,18 +160,18 @@ defineExpose({
               :false-value="0"></el-checkbox>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="functional"
-          width="80"
-          align="center"
-          label="属性多值">
-          <template #default="scope">
-            <el-checkbox
-              v-model="scope.row.functional"
-              :true-value="0"
-              :false-value="1"></el-checkbox>
-          </template>
-        </el-table-column>
+        <!--        <el-table-column-->
+        <!--          prop="functional"-->
+        <!--          width="80"-->
+        <!--          align="center"-->
+        <!--          label="属性多值">-->
+        <!--          <template #default="scope">-->
+        <!--            <el-checkbox-->
+        <!--              v-model="scope.row.functional"-->
+        <!--              :true-value="0"-->
+        <!--              :false-value="1"></el-checkbox>-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
         <el-table-column
           width="80"
           label="">

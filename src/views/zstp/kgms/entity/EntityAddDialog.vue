@@ -3,13 +3,12 @@ import { computed, ref } from 'vue'
 import { zstpRequest } from '@/api/zstp/axios.js'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from '@/utils/zstp/message.js'
+import { useZstpKgStore } from '@/store/zstp/kg.js'
+import _ from 'lodash'
 
 const emits = defineEmits(['entity-add'])
 const dialogVisible = ref(false)
 const parent = ref({})
-const title = computed(() => {
-  return `添加实体`
-})
 const getFormItem = (length = 1) => {
   const arr = []
   const key = formList.value.at(-1)?.key || 0
@@ -28,13 +27,21 @@ const handleAddFormItem = (length) => {
 }
 const route = useRoute()
 const router = useRouter()
+const kgStore = useZstpKgStore()
 
 const open = (parentData) => {
-  parent.value = parentData
+  parent.value = _.find(kgStore.conceptList, ['id', parentData.id]) || parentData
   formList.value = getFormItem(2)
 
   dialogVisible.value = true
 }
+const title = computed(() => {
+  if (parent.value.name) {
+    return `创建 ${parent.value.name} 的实体`
+  } else  {
+    return '添加实体'
+  }
+})
 
 const kgName = computed(() => {
   return route.params.kgName
