@@ -27,9 +27,9 @@ function confirm () {
         data: {
           title: form.value.name
         }
-      }).then(() => {
+      }).then((res) => {
         ElMessage.success('创建成功')
-        emits('on-success')
+        emits('on-success', res)
         dialogVisible.value = false
       })
     }
@@ -52,6 +52,7 @@ defineExpose({
 <template>
   <el-dialog
     v-model="dialogVisible"
+    class="zstp-dialog-with-title-style"
     :title="title"
     width="500">
     <el-form :model="form" :rules="rules" ref="formRef">

@@ -41,6 +41,7 @@ function handleSave () {
 }
 
 const conceptTree = ref([])
+
 function requestTree () {
   zstpRequest({
     url: `/edit/concept/${route.params.kgName}/0/tree`,
@@ -61,35 +62,26 @@ function requestTree () {
     conceptTree.value = root[0]?.children || []
   })
 }
+
 requestTree()
 
 const rules = {
   name: [
     { required: true, message: '请输入名称', trigger: 'change' },
-    { min: 1, max: 50, message: '1-50个字符', trigger: 'change' },
+    { min: 1, max: 50, message: '1-50个字符', trigger: 'change' }
   ],
   rangeValue: [
-    { required: true, message: '请选择值域', trigger: 'change' },
+    { required: true, message: '请选择值域', trigger: 'change' }
   ]
 }
 </script>
 
 <template>
-  <page-content no-breadcrumb no-main-gap no-margin class="content-edit">
-    <template #main-top-left>
-      <el-page-header @back="goBack">
-        <template #title>
-          &nbsp;
-        </template>
-        <template #content>
-          <el-text truncated :title="attrDetail.name"> 对象属性编辑 > {{ attrDetail.name }} </el-text>
-        </template>
-      </el-page-header>
-    </template>
-    <template #main-top-right>
-      <el-button type="primary" @click="handleSave">保存</el-button>
-    </template>
-    <template #main-table>
+  <div class="content-edit">
+    <div class="content-main">
+      <div class="content-main-header">
+        <el-button type="primary" @click="handleSave">保存</el-button>
+      </div>
       <el-form :model="attrDetail" label-width="120px" size="large" :rules="rules">
         <el-form-item label="属性ID" prop="id">
           {{ attrDetail.id }}
@@ -127,22 +119,53 @@ const rules = {
         </el-form-item>
         <el-form-item label="值域" prop="rangeValue">
           <el-cascader
-            :options="conceptTree"
-            size="small"
+            :options="conceptTree" s
             collapse-tags
             v-model="attrDetail.rangeValue"
             :props="{ multiple: true, value: 'id',label: 'name', checkStrictly: true, emitPath: false }"
             clearable></el-cascader>
         </el-form-item>
       </el-form>
-    </template>
-  </page-content>
+    </div>
+  </div>
 </template>
 
 <style scoped lang="scss">
+@use "@/assets/zstp/styles/mixin" as *;
+
 .content-edit {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+
+  .content-header {
+    flex: none;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: var(--pd-margin-padding-2);
+  }
+
+  .content-main {
+    height: 1px;
+    flex: auto;
+    padding: 0 var(--pd-margin-padding-2) var(--pd-margin-padding-2);
+    @include scroll();
+
+    .content-main-header {
+      text-align: right;
+      padding: var(--pd-margin-padding-2);
+    }
+  }
+
   .el-form {
     max-width: 600px;
+
+    .el-cascader {
+      width: 100%;
+    }
   }
 }
 </style>

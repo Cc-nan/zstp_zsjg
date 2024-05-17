@@ -9,8 +9,8 @@
 
   --pd-divider: var(--el-border-width) var(--el-border-style) var(--el-border-color); // 默认的边框
 
-  --pd-card-bg-color: var(--el-color-white);
-  --pd-card-box-shadow: 0 1px 2px var(--el-border-color); // 默认的卡片阴影
+  --pd-card-bg-color: #eef3fa;
+  --pd-card-box-shadow: 0 0 8px rgba(0, 0, 0, 0.2); // 默认的卡片阴影
 
   --pd-scroll-bg-color: #f6f6f6;
   --pd-scroll-thumb-color: #999999;
@@ -83,5 +83,11 @@
         left: calc(var(--el-dialog-padding-primary) * -1);
       }
     }
+  }
+}
+
+.zstp-container {
+  .el-table {
+    --el-table-header-bg-color: #ebeef5;
   }
 }

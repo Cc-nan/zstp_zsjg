@@ -106,6 +106,7 @@ conceptTreeBus.on(() => {
   height: 100%;
   display: flex;
   flex-direction: column;
+  flex: none;
 
   .input-container {
     height: 55px;

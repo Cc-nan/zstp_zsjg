@@ -142,11 +142,8 @@ function deleteConceptBtn () {
 </script>
 
 <template>
-  <page-content class="attribute-table" no-breadcrumb no-main-gap no-margin>
-    <template #main-top-left>
-      本体建模
-    </template>
-    <template #main-top-right>
+  <div class="attribute-table">
+    <div class="content-header">
       <el-space>
         <el-button-group class="button-group" v-if="query.conceptId !== 0">
           <el-button @click="handleEditConcept" class="" plain type="primary">
@@ -174,8 +171,8 @@ function deleteConceptBtn () {
       </el-space>
       <attribute-add-dialog @on-success="getTableData" ref="attributeAddDialogRef"/>
       <relation-add-dialog @on-success="getTableData"  ref="relationAddDialogRef"/>
-    </template>
-    <template #main-table>
+    </div>
+    <div class="content-main">
       <el-table
         v-loading="loading"
         border
@@ -262,12 +259,29 @@ function deleteConceptBtn () {
           </template>
         </el-table-column>
       </el-table>
-    </template>
-  </page-content>
+    </div>
+  </div>
 </template>
 
 <style scoped lang="scss">
 .attribute-table {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  .content-header{
+    flex: none;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: var(--pd-margin-padding-2);
+  }
+  .content-main{
+    height: 1px;
+    flex: auto;
+    padding: 0 var(--pd-margin-padding-2) var(--pd-margin-padding-2);
+  }
   .el-table {
     --el-table-header-bg-color: #ebeef5;
   }

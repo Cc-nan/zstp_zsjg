@@ -5,7 +5,6 @@ import PageContent from '@/components/zstp/PageContent.vue'
 import { RouterView, useRouter } from 'vue-router'
 import { useQueryPage } from '@/utils/zstp/useQueryPage.js'
 import { ref } from 'vue'
-import { Plus } from '@element-plus/icons-vue'
 import ConceptAddDialog from '@/views/zstp/kgms/schema/ConceptAddDialog.vue'
 
 const {
@@ -20,15 +19,9 @@ const {
 // const route = useRoute()
 const router = useRouter()
 
-const conceptAddDialogRef = ref(null)
-
-function handleAddConcept (data) {
-  conceptAddDialogRef.value.open(data)
-}
-
 function handleTreeNodeClick (data) {
   router.push({
-    name: 'zstpAttributeTable',
+    name: 'zstpEntityList',
     query: {
       conceptId: data.id
     }
@@ -50,20 +43,12 @@ function handleTreeNodeClick (data) {
           <template #default="{data}">
             <div class="concept-item" :title="data.name">
               <el-text truncated class="concept-name">{{ data.name }}</el-text>
-              <div class="concept-add-icon">
-                <el-link @click.stop="handleAddConcept(data)" :underline="false">
-                  <el-icon>
-                    <Plus />
-                  </el-icon>
-                </el-link>
-              </div>
             </div>
           </template>
         </concept-tree>
         <el-divider direction="vertical"></el-divider>
         <RouterView />
       </div>
-      <concept-add-dialog ref="conceptAddDialogRef" />
     </template>
   </page-content>
 </template>

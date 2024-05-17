@@ -32,6 +32,23 @@ export default [
             component: () => import('@/views/zstp/kgms/schema/RelationEdit.vue')
           }
         ]
+      },
+      {
+        path: 'entity',
+        name: 'zstpEntity',
+        component: () => import('@/views/zstp/kgms/EntityEdit.vue'),
+        children: [
+          {
+            path: 'list',
+            name: 'zstpEntityList',
+            component: () => import('@/views/zstp/kgms/entity/EntityTable.vue'),
+          },
+          {
+            path: 'edit',
+            name: 'zstpEntityEdit',
+            component: () => import('@/views/zstp/kgms/entity/EntityDetailEdit.vue'),
+          }
+        ]
       }
     ]
   }

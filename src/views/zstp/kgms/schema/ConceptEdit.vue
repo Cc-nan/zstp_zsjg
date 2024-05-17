@@ -103,27 +103,24 @@ function handleAbsChange () {
 const rules = {
   name: [
     { required: true, message: '请输入名称', trigger: 'change' },
-    { min: 1, max: 50, message: '1-50个字符', trigger: 'change' },
+    { min: 1, max: 50, message: '1-50个字符', trigger: 'change' }
   ]
 }
 </script>
 
 <template>
-  <page-content no-breadcrumb no-main-gap no-margin class="content-edit">
-    <template #main-top-left>
-      <el-page-header @back="goBack">
-        <template #title>
-          &nbsp;
-        </template>
-        <template #content>
-          <el-text truncated :title="conceptDetail.name"> 概念编辑 > {{ conceptDetailBackup.name }}</el-text>
-        </template>
-      </el-page-header>
-    </template>
-    <!--    <template #main-top-right>-->
-    <!--      <el-button type="primary">保存</el-button>-->
-    <!--    </template>-->
-    <template #main-table>
+  <div class="content-edit">
+<!--    <div class="content-header">-->
+<!--      <el-page-header @back="goBack">-->
+<!--        <template #title>-->
+<!--          &nbsp;-->
+<!--        </template>-->
+<!--        <template #content>-->
+<!--          <el-text truncated :title="conceptDetail.name"> 概念编辑 > {{ conceptDetailBackup.name }}</el-text>-->
+<!--        </template>-->
+<!--      </el-page-header>-->
+<!--    </div>-->
+    <div class="content-main">
       <el-form :model="conceptDetail" label-width="120px" size="large" :rules="rules">
         <el-form-item label="ID" prop="id">
           {{ conceptDetail.id }}
@@ -162,12 +159,34 @@ const rules = {
         <!--          <el-input v-model="conceptDetail.imageUrl"></el-input>-->
         <!--        </el-form-item>-->
       </el-form>
-    </template>
-  </page-content>
+    </div>
+  </div>
 </template>
 
 <style scoped lang="scss">
+@use "@/assets/zstp/styles/mixin" as *;
 .content-edit {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+
+  .content-header {
+    flex: none;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: var(--pd-margin-padding-2);
+  }
+
+  .content-main {
+    height: 1px;
+    flex: auto;
+    padding: 0 var(--pd-margin-padding-2) var(--pd-margin-padding-2);
+    @include scroll();
+  }
+
   .el-form {
     max-width: 600px;
   }

@@ -1,15 +1,14 @@
 <script setup>
-import { computed, nextTick, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { zstpRequest } from '@/api/zstp/axios.js'
 import { useRoute, useRouter } from 'vue-router'
-import { useEventBus } from '@vueuse/core'
 import { ElMessage } from '@/utils/zstp/message.js'
 
-const conceptTreeBus = useEventBus('conceptTree')
+const emits = defineEmits(['entity-add'])
 const dialogVisible = ref(false)
 const parent = ref({})
 const title = computed(() => {
-  return `创建 ${parent.value.name} 的子概念`
+  return `添加实体`
 })
 const getFormItem = (length = 1) => {
   const arr = []
@@ -42,28 +41,29 @@ const kgName = computed(() => {
 })
 const handleAddConcept = (formItem) => {
   return zstpRequest({
-    url: `/edit/basic/${kgName.value}`,
+    url: `/edit/entity/${kgName.value}/add`,
     method: 'POST',
     data: {
       name: formItem.name,
       meaningTag: formItem.meaningTag,
       conceptId: parent.value.id,
-      type: 0
+      type: 1
     }
   }).then((res) => {
     formItem.id = res
-    conceptTreeBus.emit('on-concept-add')
+    emits('entity-add')
   })
 }
 
 const handleEditConcept = (formItem) => {
   router.push({
-    name: 'zstpConceptEdit',
+    name: 'zstpEntityEdit',
     params: {
       kgName: route.params.kgName
     },
     query: {
-      conceptId: formItem.id
+      conceptId: parent.value.id,
+      entityId: formItem.id
     }
   })
   dialogVisible.value = false
@@ -88,8 +88,8 @@ defineExpose({
   <el-dialog
     v-model="dialogVisible"
     :close-on-click-modal="false"
-    class="zstp-dialog-with-title-style"
     :title="title"
+    class="zstp-dialog-with-title-style"
     width="500">
     <div class="form-list">
       <div class="form-item" v-for="formItem of formList" :key="formItem.key">

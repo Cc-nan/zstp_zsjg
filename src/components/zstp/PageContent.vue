@@ -21,15 +21,15 @@
                       :key="item.id">
                       <template v-if="item.clickable === false || (index + 1 === pageNavMenu.length)">
                         <el-tooltip :content="item.name" v-if="!noNavTooltip">
-                          <el-link class="page-title-disabled">
+                          <el-link :underline="false" class="page-title-disabled">
                             {{ item.name }}
                           </el-link>
                         </el-tooltip>
-                        <el-link class="page-title-disabled" v-else>
+                        <el-link :underline="false" class="page-title-disabled" v-else>
                           {{ item.name }}
                         </el-link>
                       </template>
-                      <el-link v-else @click="go(item)">
+                      <el-link :underline="false" v-else @click="go(item)">
                         {{ item.name }}
                       </el-link>
                     </el-breadcrumb-item>
@@ -212,6 +212,7 @@ onMounted(() => {
   margin: 0;
   height: 100%;
   display: block;
+  background: #eef3fa;
 
   .body-header {
     display: flex;
@@ -221,7 +222,7 @@ onMounted(() => {
     height: var(--pd-subpage-body-header-height) !important;
     padding: 0 var(--pd-subpage-body-main-margin);
     background: var(--pd-card-bg-color);
-    box-shadow: var(--pd-card-box-shadow);
+    //box-shadow: var(--pd-card-box-shadow);
 
     &:empty {
       display: none;
@@ -284,7 +285,7 @@ onMounted(() => {
     }
 
     .body-main-left, .body-main-right {
-      background: var(--pd-card-bg-color);
+      background: var(--el-color-white);
       box-shadow: var(--pd-card-box-shadow);
 
       &:empty {
@@ -321,8 +322,10 @@ onMounted(() => {
       order: 3;
       max-width: 100%;
       overflow: hidden;
-      background: var(--pd-card-bg-color);
+      background: var(--el-color-white);
       box-shadow: var(--pd-card-box-shadow);
+      height: 100%;
+      border-radius: var(--el-border-radius-base);
 
       .body-main-top, .body-main-bottom {
         display: flex;
@@ -408,7 +411,7 @@ onMounted(() => {
 
   &.body-container-margin, &.body-container-no-header {
     .body-main {
-      height: calc(100% - var(--pd-subpage-body-header-height) - var(--pd-subpage-body-main-gap) - var(--pd-subpage-body-main-margin));
+      height: calc(100% - var(--pd-subpage-body-header-height) - var(--pd-subpage-body-main-margin));
     }
   }
 
@@ -421,6 +424,7 @@ onMounted(() => {
   &.body-container-margin, &.body-container-margin.body-container-no-header {
     .body-main {
       margin: var(--pd-subpage-body-main-gap) var(--pd-subpage-body-main-margin) var(--pd-subpage-body-main-margin);
+      margin-top: 0;
     }
   }
 }
