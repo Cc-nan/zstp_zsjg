@@ -11,7 +11,7 @@ const form = ref({
 
 const open = () => {
   dialogVisible.value = true
-  form.value.kgName = kgStore.kgName.value
+  form.value.kgName = kgStore.kgName
 }
 
 const emits = defineEmits(['kg-change'])

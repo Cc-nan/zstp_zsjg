@@ -55,7 +55,7 @@ defineExpose({
     class="zstp-dialog-with-title-style"
     :title="title"
     width="500">
-    <el-form :model="form" :rules="rules" ref="formRef">
+    <el-form :model="form" :rules="rules" ref="formRef" @submit.prevent>
       <el-form-item label="图谱名称：" prop="name">
         <el-input v-model="form.name"></el-input>
       </el-form-item>
